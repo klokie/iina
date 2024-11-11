@@ -378,6 +378,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUUpdaterDelegate {
     NSApplication.shared.servicesProvider = self
 
     AppDelegate.shared.menuController?.updatePluginMenu()
+
+    menuController.bindMenuItems()
   }
 
   /** Show welcome window if `application(_:openFile:)` wasn't called, i.e. launched normally. */
@@ -700,6 +702,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUUpdaterDelegate {
     openFileTimer?.invalidate()
     pendingFilesForOpenFile.append(filename)
     openFileTimer = Timer.scheduledTimer(timeInterval: OpenFileRepeatTime, target: self, selector: #selector(handleOpenFile), userInfo: nil, repeats: false)
+
+    if isDVD(filename) {
+        openDVDMenu(path: filename)
+        return true
+    }
+
     return true
   }
 
@@ -715,7 +723,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUUpdaterDelegate {
       return
     }
     let urls = pendingFilesForOpenFile.map { URL(fileURLWithPath: $0) }
-    
+
     // if installing a plugin package
     if let pluginPackageURL = urls.first(where: { $0.pathExtension == "iinaplgz" }) {
       showPreferences(self)
@@ -808,13 +816,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUUpdaterDelegate {
       Logger.log("Cannot parse URL using URLComponents", level: .warning)
       return
     }
-    
+
     if parsed.scheme != "iina" {
       // try to open the URL directly
       PlayerCore.activeOrNewForMenuAction(isAlternative: false).openURLString(url)
       return
     }
-    
+
     // handle url scheme
     guard let host = parsed.host else { return }
 
@@ -1076,7 +1084,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUUpdaterDelegate {
         continue
       }
       // Must not cause macOS to prompt the user to mount a volume when the list contains files that
-      // are on volumes that are not currently mounted.
+      // are on a volume that is not currently mounted.
       guard let bookmark = try? URL(resolvingBookmarkData: asData,
                                     options: [.withoutMounting, .withoutUI],
                                     bookmarkDataIsStale: &isStale) else {
@@ -1128,6 +1136,69 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUUpdaterDelegate {
     } else {
       Logger.log("Saved list of recent documents")
     }
+  }
+
+  private func isDVD(_ path: String) -> Bool {
+    let url = URL(fileURLWithPath: path)
+    return FileManager.default.fileExists(atPath: url.appendingPathComponent("VIDEO_TS").path)
+  }
+
+  private func openDVDMenu(path: String) {
+    let player = PlayerCore.newPlayerCore
+    player.openURL(URL(fileURLWithPath: path))
+    player.mpv.setFlag("dvd-nav", true)
+  }
+
+  @objc func openDisc(_ sender: Any) {
+    print("Open Disc menu item clicked")
+    openDVDFolder()
+  }
+
+  func openDVDFolder() {
+    let panel = NSOpenPanel()
+    panel.canChooseFiles = true
+    panel.canChooseDirectories = true
+    panel.allowsMultipleSelection = false
+    panel.allowedFileTypes = ["iso", "img"]  // Add common disk image formats
+    panel.message = NSLocalizedString("alert.choose_dvd_folder.message", comment: "Choose a DVD folder or disk image")
+    panel.prompt = NSLocalizedString("alert.choose_dvd_folder.ok", comment: "Choose")
+
+    panel.begin { result in
+        if result == .OK, let url = panel.url {
+            self.openDVD(url: url)
+        }
+    }
+  }
+
+  func openDVD(url: URL) {
+    let player = PlayerCore.active
+
+    // Set DVD-specific options
+    player.mpv.setString("dvd-device", url.path)
+
+    // Open the DVD
+    if url.pathExtension.lowercased() == "iso" {
+        player.openURL(url)
+    } else {
+        // For folders, we'll try to find and play the main VOB file
+        let fileManager = FileManager.default
+        let vobFiles = try? fileManager.contentsOfDirectory(at: url.appendingPathComponent("VIDEO_TS"), includingPropertiesForKeys: nil, options: [])
+            .filter { $0.pathExtension.lowercased() == "vob" }
+            .sorted { $0.lastPathComponent < $1.lastPathComponent }
+
+        if let mainVOB = vobFiles?.first {
+            player.openURL(mainVOB)
+        } else {
+            print("No VOB files found in the DVD folder")
+            return
+        }
+    }
+
+    // Enable DVD menu support if available
+    player.mpv.setFlag("dvd-nav", true)
+    player.mpv.setFlag("dvd-nav-menu", true)
+    player.mpv.setFlag("mouse-movements", true)
+    player.mpv.setFlag("osd-assist", true)
   }
 }
 

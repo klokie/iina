@@ -91,6 +91,7 @@ class MenuController: NSObject, NSMenuDelegate {
   @IBOutlet weak var newWindow: NSMenuItem!
   @IBOutlet weak var newWindowSeparator: NSMenuItem!
   @IBOutlet weak var otherKeyBindingsMenu: NSMenu!
+  @IBOutlet weak var openDisc: NSMenuItem?
   // Playback
   @IBOutlet weak var playbackMenu: NSMenu!
   @IBOutlet weak var pause: NSMenuItem!
@@ -231,6 +232,36 @@ class MenuController: NSObject, NSMenuDelegate {
     }
 
     otherKeyBindingsMenu.delegate = self
+
+    print("Starting to add Open Disc menu item")
+
+    guard let mainMenu = NSApp.mainMenu else {
+        print("Main menu not found")
+        return
+    }
+
+    guard let fileMenu = mainMenu.item(withTitle: "File")?.submenu else {
+        print("File menu not found")
+        return
+    }
+
+    let openDiscItem = NSMenuItem(title: NSLocalizedString("menu.file.open_disc", comment: "Open Disc..."),
+                                  action: #selector(AppDelegate.openDisc(_:)),
+                                  keyEquivalent: "")
+    openDiscItem.target = NSApp.delegate as? AppDelegate
+
+    let openURLIndex = fileMenu.indexOfItem(withTitle: NSLocalizedString("menu.file.open_url", comment: "Open URL..."))
+    print("Open URL index: \(openURLIndex)")
+
+    if openURLIndex != -1 {
+        fileMenu.insertItem(openDiscItem, at: openURLIndex + 1)
+        print("Inserted Open Disc item after Open URL")
+    } else {
+        fileMenu.addItem(openDiscItem)
+        print("Added Open Disc item to end of File menu")
+    }
+
+    print("Finished adding Open Disc menu item")
 
     // Playback menu
 
@@ -599,12 +630,12 @@ class MenuController: NSObject, NSMenuDelegate {
       var rootMenu: NSMenu! = pluginMenu
       let menuItems = (instance.plugin.globalInstance?.menuItems ?? []) + instance.menuItems
       if menuItems.isEmpty { continue }
-      
+
       if index != 0 {
         pluginMenu.addItem(.separator())
       }
       pluginMenu.addItem(withTitle: instance.plugin.name, enabled: false)
-      
+
       for item in menuItems {
         if counter == 5 {
           Logger.log("Please avoid adding too much first-level menu items. IINA will only display the first 5 of them.",
@@ -733,7 +764,7 @@ class MenuController: NSObject, NSMenuDelegate {
   private func updateOpenMenuItems() {
     if PlayerCore.playing.count == 0 {
       open.title = stringForOpen
-      openAlternative.title = stringForOpen
+      openAlternative.title = stringForOpenAlternative
       openURL.title = stringForOpenURL
       openURLAlternative.title = stringForOpenURL
     } else {
@@ -895,9 +926,9 @@ class MenuController: NSObject, NSMenuDelegate {
       var didBindMenuItem = false
       for kb in keyBindings {
         guard kb.isIINACommand == isIINACmd else { continue }
-        let (sameAction, value, extraData) = sameKeyAction(kb.action, actions, normalizeLastNum, numRange)
+        let (sameAction, optionalValue, extraData) = sameKeyAction(kb.action, actions, normalizeLastNum, numRange)
         if sameAction, let (kEqv, kMdf) = KeyCodeHelper.macOSKeyEquivalent(from: kb.normalizedMpvKey) {
-          /// If we got here, `KeyMapping`'s action qualifies for being bound to `menuItem`.
+          /// If we got here, `KeyMapping`'s action qualifies for being bound to menuItem`.
           let kbMenuItem: NSMenuItem
 
           if didBindMenuItem {
@@ -911,7 +942,7 @@ class MenuController: NSObject, NSMenuDelegate {
             kbMenuItem = menuItem
             didBindMenuItem = true
           }
-          updateMenuItem(kbMenuItem, kEqv: kEqv, kMdf: kMdf, l10nKey: l10nKey, value: value, extraData: extraData)
+          updateMenuItem(kbMenuItem, kEqv: kEqv, kMdf: kMdf, l10nKey: l10nKey, value: optionalValue, extraData: extraData)
         }
       }
 
@@ -965,5 +996,24 @@ class MenuController: NSObject, NSMenuDelegate {
       }
       item.isEnabled = false
     }
+  }
+
+  @objc func openDVD(_ sender: AnyObject) {
+    let panel = NSOpenPanel()
+    panel.canChooseFiles = false
+    panel.canChooseDirectories = true
+    panel.allowsMultipleSelection = false
+    panel.message = NSLocalizedString("alert.choose_dvd_folder.message", comment: "Choose a DVD folder or disk image")
+    if panel.runModal() == .OK {
+        if let url = panel.url {
+            PlayerCore.active.openURL(url)
+            PlayerCore.active.mpv.setString("dvd-device", url.path)
+            PlayerCore.active.mpv.setFlag("dvdnav", true)
+        }
+    }
+  }
+
+  private func updateMenu(_ localizedKey: String, _ menuItem: NSMenuItem) {
+    menuItem.title = NSLocalizedString("menu." + localizedKey, comment: "")
   }
 }

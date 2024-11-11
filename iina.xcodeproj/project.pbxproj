@@ -313,6 +313,8 @@
 		D17504A82918F13E005C3DD0 /* OSCToolbarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D17504A72918F13E005C3DD0 /* OSCToolbarButton.swift */; };
 		D1A4D98A2B1495270009AB4E /* LegacyMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A4D9892B1495270009AB4E /* LegacyMigration.swift */; };
 		D1B4E24E2A3AFC9100E36F1D /* MiniPlayerWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B4E24D2A3AFC9100E36F1D /* MiniPlayerWindow.swift */; };
+		DE2E9F882CA8B4A4008E42A8 /* libjxl.0.11.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE2E9F862CA8B4A3008E42A8 /* libjxl.0.11.0.dylib */; };
+		DE2E9F892CA8B4A4008E42A8 /* libjxl_threads.0.11.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE2E9F872CA8B4A3008E42A8 /* libjxl_threads.0.11.0.dylib */; };
 		E301EFDA21312AB300BC8588 /* KeychainAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = E301EFD921312AB300BC8588 /* KeychainAccess.swift */; };
 		E30D2EBD21F5FD2600E1FF0D /* PluginOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30D2EBC21F5FD2600E1FF0D /* PluginOverlayView.swift */; };
 		E322A4F820A8442E00C67D32 /* PlaylistPlaybackProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E322A4F720A8442E00C67D32 /* PlaylistPlaybackProgressView.swift */; };
@@ -1787,6 +1789,8 @@
 		D27E35E01E379B700064BE57 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		D2B411421E5336AD002819E1 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/KeyBinding.strings"; sourceTree = "<group>"; };
 		D2B411431E5336AE002819E1 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		DE2E9F862CA8B4A3008E42A8 /* libjxl.0.11.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjxl.0.11.0.dylib; path = "../../../../opt/homebrew/Cellar/jpeg-xl/0.11.0/lib/libjxl.0.11.0.dylib"; sourceTree = "<group>"; };
+		DE2E9F872CA8B4A3008E42A8 /* libjxl_threads.0.11.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjxl_threads.0.11.0.dylib; path = "../../../../opt/homebrew/Cellar/jpeg-xl/0.11.0/lib/libjxl_threads.0.11.0.dylib"; sourceTree = "<group>"; };
 		E1298BB121A517C300B646AD /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/MainMenu.strings; sourceTree = "<group>"; };
 		E1298BB221A517C300B646AD /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/MainWindowController.strings; sourceTree = "<group>"; };
 		E1298BB321A517C300B646AD /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/QuickSettingViewController.strings; sourceTree = "<group>"; };
@@ -2029,6 +2033,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE2E9F882CA8B4A4008E42A8 /* libjxl.0.11.0.dylib in Frameworks */,
+				DE2E9F892CA8B4A4008E42A8 /* libjxl_threads.0.11.0.dylib in Frameworks */,
 				34ACABA32C142A0500F871A0 /* libsoxr.0.dylib in Frameworks */,
 				496B19921E2968530035AF10 /* PIP.framework in Frameworks */,
 				34ACABAC2C142A0500F871A0 /* libnettle.8.dylib in Frameworks */,
@@ -2255,6 +2261,8 @@
 		848290731D95978100C3C76C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DE2E9F872CA8B4A3008E42A8 /* libjxl_threads.0.11.0.dylib */,
+				DE2E9F862CA8B4A3008E42A8 /* libjxl.0.11.0.dylib */,
 				34ACAB592C142A0400F871A0 /* libarchive.13.dylib */,
 				34ACAB712C142A0500F871A0 /* libass.9.dylib */,
 				34ACAB602C142A0400F871A0 /* libavcodec.61.dylib */,
@@ -4658,6 +4666,11 @@
 			baseConfigurationReference = 496498882919E47900CD61A5 /* iina.xcconfig */;
 			buildSettings = {
 				GCC_PREPROCESSOR_DEFINITIONS = "GL_SILENCE_DEPRECATION=1";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/deps/include",
+					"$(VULKAN_SDK)/include",
+				);
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.video";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2017-2024\nCollider LI, et al.\nReleased under GPLv3.";
 				INFOPLIST_KEY_NSMainNibFile = MainMenu;
@@ -4665,6 +4678,16 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/deps/lib",
+					"/opt/homebrew/opt/**",
+					"/opt/homebrew/Cellar/libunibreak/**",
+					"/opt/homebrew/Cellar/shaderc/**",
+					"/opt/homebrew/Cellar/rubberband/**",
+					/opt/X11/lib,
+					"/opt/homebrew/Cellar/uchardet/**",
+					"${HOME}/VulkanSDK/1.3.290.0/macOS/lib",
+					"/opt/homebrew/lib/**",
+					"/opt/homebrew/opt/libplacebo/**",
+					"/opt/homebrew/Cellar/jpeg-xl/0.11.0/lib",
 				);
 				SKIP_INSTALL = NO;
 			};
@@ -4697,6 +4720,11 @@
 			baseConfigurationReference = 496498882919E47900CD61A5 /* iina.xcconfig */;
 			buildSettings = {
 				GCC_PREPROCESSOR_DEFINITIONS = "GL_SILENCE_DEPRECATION=1";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/deps/include",
+					"$(VULKAN_SDK)/include",
+				);
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.video";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2017-2024\nCollider LI, et al.\nReleased under GPLv3.";
 				INFOPLIST_KEY_NSMainNibFile = MainMenu;
@@ -4704,6 +4732,16 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/deps/lib",
+					"/opt/homebrew/opt/**",
+					"/opt/homebrew/Cellar/libunibreak/**",
+					"/opt/homebrew/Cellar/shaderc/**",
+					"/opt/homebrew/Cellar/rubberband/**",
+					/opt/X11/lib,
+					"/opt/homebrew/Cellar/uchardet/**",
+					"${HOME}/VulkanSDK/1.3.290.0/macOS/lib",
+					"/opt/homebrew/lib/**",
+					"/opt/homebrew/opt/libplacebo/**",
+					"/opt/homebrew/Cellar/jpeg-xl/0.11.0/lib",
 				);
 				SKIP_INSTALL = NO;
 			};
@@ -4747,6 +4785,11 @@
 					"GL_SILENCE_DEPRECATION=1",
 					"$(inherited)",
 				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/deps/include",
+					"$(VULKAN_SDK)/include",
+				);
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.video";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2017-2024\nCollider LI, et al.\nReleased under GPLv3.";
 				INFOPLIST_KEY_NSMainNibFile = MainMenu;
@@ -4754,6 +4797,16 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/deps/lib",
+					"/opt/homebrew/opt/**",
+					"/opt/homebrew/Cellar/libunibreak/**",
+					"/opt/homebrew/Cellar/shaderc/**",
+					"/opt/homebrew/Cellar/rubberband/**",
+					/opt/X11/lib,
+					"/opt/homebrew/Cellar/uchardet/**",
+					"${HOME}/VulkanSDK/1.3.290.0/macOS/lib",
+					"/opt/homebrew/lib/**",
+					"/opt/homebrew/opt/libplacebo/**",
+					"/opt/homebrew/Cellar/jpeg-xl/0.11.0/lib",
 				);
 				SKIP_INSTALL = NO;
 			};
@@ -4764,6 +4817,11 @@
 			baseConfigurationReference = 496498882919E47900CD61A5 /* iina.xcconfig */;
 			buildSettings = {
 				GCC_PREPROCESSOR_DEFINITIONS = "GL_SILENCE_DEPRECATION=1";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/deps/include",
+					"$(VULKAN_SDK)/include",
+				);
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.video";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2017-2024\nCollider LI, et al.\nReleased under GPLv3.";
 				INFOPLIST_KEY_NSMainNibFile = MainMenu;
@@ -4771,6 +4829,16 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/deps/lib",
+					"/opt/homebrew/opt/**",
+					"/opt/homebrew/Cellar/libunibreak/**",
+					"/opt/homebrew/Cellar/shaderc/**",
+					"/opt/homebrew/Cellar/rubberband/**",
+					/opt/X11/lib,
+					"/opt/homebrew/Cellar/uchardet/**",
+					"${HOME}/VulkanSDK/1.3.290.0/macOS/lib",
+					"/opt/homebrew/lib/**",
+					"/opt/homebrew/opt/libplacebo/**",
+					"/opt/homebrew/Cellar/jpeg-xl/0.11.0/lib",
 				);
 				SKIP_INSTALL = NO;
 			};

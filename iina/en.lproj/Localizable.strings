@@ -214,6 +214,10 @@
 
 "menu.crop_custom" = "Custom…";
 "menu.find_online_sub" = "Find Online Subtitles from %@";
+"menu.file.open_disc" = "Open Disc...";
+"menu.file" = "File";
+"menu.file.open" = "Open...";
+"menu.file.open_url" = "Open URL...";
 
 "track.audio" = "Audio";
 "track.none" = "<None>";
@@ -439,3 +443,6 @@
 "plugin.install_error.cannot_load" = "IINA cannot load this plugin. It might be in the wrong format.";
 "plugin.check_for_updates" = "Check for Updates";
 "plugin.updating" = "Downloading update…";
+
+"alert.choose_dvd_folder.message" = "Choose a DVD folder or disk image";
+"alert.choose_dvd_folder.ok" = "Choose";

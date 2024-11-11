@@ -573,6 +573,16 @@
 				<string>io.iina.iinaplgz</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>DVD</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.dvd</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleIconFile</key>
 	<string>AppIcon.icns</string>

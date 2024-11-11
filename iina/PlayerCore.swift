@@ -132,10 +132,10 @@ class PlayerCore: NSObject {
   @Atomic var backgroundQueueTicket = 0
 
   var initialWindow: InitialWindowController!
-  
+
   var mainWindow: MainWindowController!
   var miniPlayer: MiniPlayerWindowController!
-  
+
   var currentController: PlayerWindowController {
     return isInMiniPlayer ? miniPlayer : mainWindow
   }
@@ -511,9 +511,6 @@ class PlayerCore: NSObject {
   ///
   /// This method is intended to only be used during application termination. Once shutdown has been initiated player methods
   /// **must not** be called.
-  /// - Important: As a part of shutting down the player this method sends a quit command to mpv. Even though the command is
-  ///     sent to mpv using the synchronous API mpv executes the quit command asynchronously. The player is not fully shutdown
-  ///     until mpv finishes executing the quit command and shuts down.
   func shutdown() {
     guard info.state != .shuttingDown else { return }
     info.state = .shuttingDown
@@ -1520,7 +1517,7 @@ class PlayerCore: NSObject {
 
   /// Remove an audio filter given as a `MPVFilter` object.
   ///
-  /// If the filter is not labeled then removing using a `MPVFilter` object can be problematic if the filter has multiple parameters.
+  /// If the filter is not labeled then removing using a MPVFilter` object can be problematic if the filter has multiple parameters.
   /// Filters that support multiple parameters have more than one valid string representation due to there being no requirement on the
   /// order in which those parameters are given in a filter. If the order of parameters in the string representation of the filter IINA uses in
   /// the command sent to mpv does not match the order mpv expects the remove command will not find the filter to be removed. For
@@ -1972,7 +1969,6 @@ class PlayerCore: NSObject {
     }
     postNotification(.iinaTracklistChanged)
   }
-
   func onVideoReconfig() {
     // If loading file, video reconfig can return 0 width and height
     guard info.state.loaded else { return }
@@ -2087,8 +2083,8 @@ class PlayerCore: NSObject {
       // touch bar. Does this host have a touch bar? Is the touch bar configured to show app controls?
       // Is the touch bar awake? Is the host being operated in closed clamshell mode? This is the kind
       // of information needed to avoid running the timer and updating controls that are not visible.
-      // Unfortunately in the documentation for NSTouchBar Apple indicates "There’s no need, and no
-      // API, for your app to know whether or not there’s a Touch Bar available". So this code keys
+      // Unfortunately in the documentation for NSTouchBar Apple indicates "There's no need, and no
+      // API, for your app to know whether or not there's a Touch Bar available". So this code keys
       // off whether AppKit has requested that a NSTouchBar object be created. This avoids running the
       // timer on Macs that do not have a touch bar. It also may avoid running the timer when a
       // MacBook with a touch bar is being operated in closed clameshell mode.
@@ -2172,7 +2168,7 @@ class PlayerCore: NSObject {
   @objc func syncUITime() {
     syncUI(.time)
   }
-  
+
   func syncUI(_ options: [SyncUIOption]) {
     for option in options {
       syncUI(option)
@@ -2690,3 +2686,4 @@ class NowPlayingInfoManager {
     }
   }
 }
+
